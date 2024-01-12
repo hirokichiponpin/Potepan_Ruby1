@@ -35,6 +35,10 @@ if menu == 1
     file_content_confirm = gets.to_i
 
     until file_content_confirm == 1 do
+        if file_content_confirm != 2 
+            puts "※入力エラー"
+        end
+
         puts "ファイル名『#{file_name}』にメモしたい内容を入力してください"
         puts "入力が完了したら Ctrl + D を押してください"
         
@@ -47,6 +51,19 @@ if menu == 1
         puts "→1(OK!) / 2(再入力) ※半角入力してください"
 
         file_content_confirm = gets.to_i
+
+        until file_content_confirm == 1 || file_content_confirm == 2 do
+            puts "※入力エラー　再度入力してください"
+            puts "→1(OK!) / 2(再入力) ※半角入力してください"
+            file_content_confirm = gets.to_i
+        end
+    end
+
+    len = file_content.length
+    i = 0
+    while i < len
+        file_content[i] = file_content[i].chomp
+        i += 1
     end
 
     require "csv"
@@ -57,7 +74,7 @@ if menu == 1
     puts "メモ『#{file_name}.csv』が作成されました！"
 
 else 
-    puts "編集を行いたいファイル名を入力してください"
+    puts "編集を行いたいファイル名を拡張子を除いて入力してください"
 
     edit_file_name = gets.chomp
 
@@ -65,7 +82,7 @@ else
         puts "ファイル名『#{edit_file_name}』"
         
         require "csv"
-        edit_file_content = CSV.read(edit_file_name)
+        edit_file_content = CSV.read("#{edit_file_name}.csv")
         puts "----------"
         puts edit_file_content
     rescue
@@ -77,7 +94,24 @@ else
 
     puts "----------"
 
-    until file_content_confirm == 1 do
+    puts "メモの内容を編集してください"
+    puts "入力が完了したら Ctrl + D を押してください"
+
+    file_content = readlines
+
+    puts "※内容は以下でよろしいでしょうか？"
+    puts "----------"
+    puts file_content
+    puts "----------"
+    puts "→1(OK!) / 2(再入力) ※半角入力してください"
+
+    edit_file_content_confirm = gets.to_i
+
+    until edit_file_content_confirm == 1 do
+        if edit_file_content_confirm != 2
+            puts "※入力エラー"
+        end
+
         puts "メモの内容を編集してください"
         puts "入力が完了したら Ctrl + D を押してください"
 
@@ -89,11 +123,24 @@ else
         puts "----------"
         puts "→1(OK!) / 2(再入力) ※半角入力してください"
 
-        file_content_confirm = gets.to_i
+        edit_file_content_confirm = gets.to_i
+
+        until edit_file_content_confirm == 1 || edit_file_content_confirm == 2 do
+            puts "※入力エラー　再度入力してください"
+            puts "→1(OK!) / 2(再入力) ※半角入力してください"
+            edit_file_content_confirm = gets.to_i
+        end
+    end
+
+    len = file_content.length
+    i = 0
+    while i < len
+        file_content[i] = file_content[i].chomp
+        i += 1
     end
 
     require "csv"
-    CSV.open("#{edit_file_name}","w") do |csv|
+    CSV.open("#{edit_file_name}.csv","w") do |csv|
         csv.puts file_content
     end
 
